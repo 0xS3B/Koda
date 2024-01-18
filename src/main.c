@@ -16,7 +16,7 @@ int main() {
     long file_size = ftell(file_ptr);
     fseek(file_ptr, 0, SEEK_SET);
 
-    file_content = (char*) calloc(1, file_size + 1); // + 1 for the null terminator
+    file_content = calloc(file_size + 1, sizeof(char)); // + 1 for the null terminator
 
     if(file_content == NULL) {
         perror("Memory allocation error");
@@ -25,6 +25,7 @@ int main() {
     }
 
     fread(file_content, file_size, 1, file_ptr);
+
 
     lexer_t* lexer = lexer_init(file_content);
     token_t* token = NULL;

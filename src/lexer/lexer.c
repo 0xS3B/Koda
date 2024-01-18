@@ -106,8 +106,9 @@ void lexer_next_char(lexer_t* lexer) {
 char* lexer_get_current_char(lexer_t* lexer) {
     char* string = calloc(2, sizeof(char));
 
+    // transform the char into a string
     string[0] = lexer->c;
-    string[1] = '\0'; // useless because calloc initializes to 0
+    string[1] = '\0';
 
     return string;
 }
