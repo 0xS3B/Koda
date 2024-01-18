@@ -1,3 +1,2 @@
-var name = "seb";
-
-print(name);
+var test = "hello world!";
+print(test);

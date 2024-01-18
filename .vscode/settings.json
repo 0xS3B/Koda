@@ -60,6 +60,9 @@
         "print.h": "c",
         "*.inc": "asm-collection",
         "*.asm": "masm",
-        "ctype.h": "c"
+        "ctype.h": "c",
+        "optional": "c",
+        "utility": "c",
+        "stdio.h": "c"
     }
 }

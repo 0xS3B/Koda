@@ -23,7 +23,6 @@ token_t* create_token(token_type type, char* value) {
     token->type = type;
     token->value = value;
 
-
     return token;
 }
 
@@ -59,31 +58,31 @@ token_t* lexer_get_token(lexer_t* lexer) {
 }
 
 token_t* lexer_get_id(lexer_t* lexer) {
-    char* value = calloc(1, sizeof(char));
-    value[0] = '\0';
+    char* id = calloc(1, sizeof(char));
+    id[0] = '\0';
 
     while(isalnum(lexer->c)) {
-        char* id = lexer_get_current_char(lexer);
-        value = realloc(value, (strlen(id) + 1) * sizeof(char));
-        strcat(value, id);
+        char* c = lexer_get_current_char(lexer);
+        id = realloc(id, 2 * sizeof(char)); // 2 = strlen(c)
+        strcat(id, c);
 
         lexer_next_char(lexer);
     }
 
-    return create_token(TOKEN_ID, value);
+    return create_token(TOKEN_ID, id);
 }
 
 token_t* lexer_get_string(lexer_t* lexer) {
-    char* value = calloc(1, sizeof(char));
-    value[0] = '\0';
+    char* string = calloc(1, sizeof(char));
+    string[0] = '\0';
 
     // skip the first "
     lexer_next_char(lexer);
 
     while(lexer->c != '"') {
-        char* string = lexer_get_current_char(lexer);
-        value = realloc(value, (strlen(string) + 1) * sizeof(char)); // ici il y a un + 1 pour commencer à 1 * sizeof(char), etc,... au lieu de 0 * sizeof(char) car on peut pas allouer un espace memoire de 0
-        strcat(value, string);
+        char* c = lexer_get_current_char(lexer);
+        string = realloc(string, 2 * sizeof(char)); // 2 = strlen(c)
+        strcat(string, c);
 
         lexer_next_char(lexer);
     }
@@ -91,7 +90,7 @@ token_t* lexer_get_string(lexer_t* lexer) {
     // skip the last "
     lexer_next_char(lexer);
 
-    return create_token(TOKEN_STRING, value);
+    return create_token(TOKEN_STRING, string);
 }
 // end token
 
@@ -106,8 +105,9 @@ void lexer_next_char(lexer_t* lexer) {
 
 char* lexer_get_current_char(lexer_t* lexer) {
     char* string = calloc(2, sizeof(char));
+
     string[0] = lexer->c;
-    string[1] = '\0';
+    string[1] = '\0'; // useless because calloc initializes to 0
 
     return string;
 }
