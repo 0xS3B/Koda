@@ -17,7 +17,7 @@ lexer_t* lexer_init(char* source) {
 }
 
 // token
-token_t* create_token(token_type type, char* value) {
+token_t* lexer_create_token(token_type_t type, char* value) {
     token_t* token = calloc(1, sizeof(token_t));
 
     token->type = type;
@@ -27,34 +27,36 @@ token_t* create_token(token_type type, char* value) {
 }
 
 token_t* lexer_get_token(lexer_t* lexer) {
-    while(lexer->c != '\0' && lexer->position < strlen(lexer->source)) {
-        if(lexer->c == ' ' || lexer->c == '\n')
-            lexer_skip_space(lexer);
+    if(lexer->c == '\0') 
+        return lexer_create_token(TOKEN_EOF, "\0");
+        
+    if(lexer->c == ' ' || lexer->c == '\n')
+        lexer_skip_space(lexer);
 
-        if(isalnum(lexer->c))
-            return lexer_get_id(lexer);
+    if(isalnum(lexer->c))
+        return lexer_get_id(lexer);
 
-        switch(lexer->c)
-        {
-            case '"':
-                return lexer_get_string(lexer);
+    if(lexer->c == '"')
+        return lexer_get_string(lexer);
 
-            case '=':
-                return create_token(TOKEN_EQUAL, lexer_get_current_char(lexer));
 
-            case ';':
-                return create_token(TOKEN_SEMICOLON, lexer_get_current_char(lexer));
+    token_t* token = NULL;
 
-            case '(':
-                return create_token(TOKEN_LPAREN, lexer_get_current_char(lexer));
-
-            case ')':
-                return create_token(TOKEN_RPAREN, lexer_get_current_char(lexer));
-            
-            default:
-                return NULL;
-        }
+    switch(lexer->c)
+    {
+        case '+': token = lexer_create_token(TOKEN_ADD, lexer_get_current_char(lexer)); break;
+        case ',': token = lexer_create_token(TOKEN_COMMA, lexer_get_current_char(lexer)); break;
+        case '/': token = lexer_create_token(TOKEN_DIV, lexer_get_current_char(lexer)); break;
+        case '=': token = lexer_create_token(TOKEN_EQUAL, lexer_get_current_char(lexer)); break;
+        case '(': token = lexer_create_token(TOKEN_LPAREN, lexer_get_current_char(lexer)); break;
+        case '*': token = lexer_create_token(TOKEN_MUL, lexer_get_current_char(lexer)); break;
+        case ')': token = lexer_create_token(TOKEN_RPAREN, lexer_get_current_char(lexer)); break;
+        case '-': token = lexer_create_token(TOKEN_SUB, lexer_get_current_char(lexer)); break;
+        case ';': token = lexer_create_token(TOKEN_SEMICOLON, lexer_get_current_char(lexer)); break;
     }
+
+    lexer_next_char(lexer);
+    return token;
 }
 
 token_t* lexer_get_id(lexer_t* lexer) {
@@ -63,13 +65,13 @@ token_t* lexer_get_id(lexer_t* lexer) {
 
     while(isalnum(lexer->c)) {
         char* c = lexer_get_current_char(lexer);
-        id = realloc(id, 2 * sizeof(char)); // 2 = strlen(c)
+        id = realloc(id, strlen(id) + 2 * sizeof(char)); // 2 = strlen(c)
         strcat(id, c);
 
         lexer_next_char(lexer);
     }
 
-    return create_token(TOKEN_ID, id);
+    return lexer_create_token(TOKEN_ID, id);
 }
 
 token_t* lexer_get_string(lexer_t* lexer) {
@@ -81,7 +83,7 @@ token_t* lexer_get_string(lexer_t* lexer) {
 
     while(lexer->c != '"') {
         char* c = lexer_get_current_char(lexer);
-        string = realloc(string, 2 * sizeof(char)); // 2 = strlen(c)
+        string = realloc(string, strlen(string) + 2 * sizeof(char)); // 2 = strlen(c)
         strcat(string, c);
 
         lexer_next_char(lexer);
@@ -90,7 +92,7 @@ token_t* lexer_get_string(lexer_t* lexer) {
     // skip the last "
     lexer_next_char(lexer);
 
-    return create_token(TOKEN_STRING, string);
+    return lexer_create_token(TOKEN_STRING, string);
 }
 // end token
 

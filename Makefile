@@ -1,7 +1,7 @@
 EXEC = x.out
 
 CC = gcc
-CFLAGS = -g
+CFLAGS = -g -I./src
 
 SRCDIR = src
 OBJDIR = obj

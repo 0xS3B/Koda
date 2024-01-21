@@ -1,4 +1,5 @@
 #include "lexer/lexer.h"
+#include "parser/parser.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -16,7 +17,7 @@ int main() {
     long file_size = ftell(file_ptr);
     fseek(file_ptr, 0, SEEK_SET);
 
-    file_content = calloc(file_size + 1, sizeof(char)); // + 1 for the null terminator
+    file_content = calloc(file_size, sizeof(char)); // + 1 for the null terminator
 
     if(file_content == NULL) {
         perror("Memory allocation error");
@@ -28,13 +29,15 @@ int main() {
 
 
     lexer_t* lexer = lexer_init(file_content);
+    parser_t* parser = parser_init(lexer);
+
     token_t* token = NULL;
 
-    while((token = lexer_get_token(lexer)) != NULL) {
-        printf("TOKEN: value: %s, type: %d\n", token->value, token->type);
-        lexer_next_char(lexer);
+    // test
+    while((token = parser->current_token) != NULL && token->type != TOKEN_EOF) {
+        parser_consume(parser, token->type);
     }
-
+    
     free(file_content);
     fclose(file_ptr);
 

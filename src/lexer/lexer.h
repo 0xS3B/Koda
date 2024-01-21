@@ -12,28 +12,27 @@ lexer_t* lexer_init(char* source);
 
 
 // token
-typedef enum {
+typedef enum { // in alphabetical order
     TOKEN_ADD,
+    TOKEN_COMMA,
     TOKEN_DIV,
+    TOKEN_EOF,
     TOKEN_EQUAL,
-    TOKEN_FALSE,
     TOKEN_ID,
-    TOKEN_IF,
     TOKEN_LPAREN,
     TOKEN_MUL,
     TOKEN_RPAREN,
     TOKEN_SUB,
     TOKEN_SEMICOLON,
     TOKEN_STRING,
-    TOKEN_TRUE,
-} token_type;
+} token_type_t;
 
 typedef struct {
-    token_type type;
+    token_type_t type;
     char* value;
 } token_t;
 
-token_t* create_token(token_type type, char* value);
+token_t* lexer_create_token(token_type_t type, char* value);
 token_t* lexer_get_token(lexer_t* lexer);
 token_t* lexer_get_id(lexer_t* lexer);
 token_t* lexer_get_string(lexer_t* lexer);
