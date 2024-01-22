@@ -1,4 +1,4 @@
-EXEC = x.out
+EXEC = koda.out
 
 CC = gcc
 CFLAGS = -g -I./src
@@ -21,4 +21,4 @@ link: $(OBJS)
 	$(CC) $(CFLAGS) $^ -o $(EXEC)
 
 run:
-	./x.out
+	./koda.out ./examples/main.kd

@@ -4,12 +4,22 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-int main() {
+void print_usage() {
+    printf("Usage: ./koda.out [file.kd]\n");
+}
+
+int main(int argc, char *argv[]) {
+    if(argv[1] == NULL) {
+        print_usage();
+        return 1;
+    }
+
     char* file_content = NULL;
-    FILE* file_ptr = fopen("./examples/main.x", "r");
+    FILE* file_ptr = fopen(argv[1], "r");
 
     if(file_ptr == NULL) {
         perror("Error opening file");
+        print_usage();
         return 1;
     }
 
@@ -30,6 +40,7 @@ int main() {
 
     lexer_t* lexer = lexer_init(file_content);
     parser_t* parser = parser_init(lexer);
+    ast_node_t* prog = parser_parse(parser); // the start of the program
 
     token_t* token = NULL;
 
